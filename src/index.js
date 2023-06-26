@@ -17,21 +17,14 @@ function isChatEvent(event) {
   return !!event.requestContext.routeKey;
 }
 
-function isSlackEvent(event) {
-  return event.path === '/message';
-}
-
 export const handler = async (event) => {
   console.trace(JSON.stringify(event, null, 2));
   try {
     if (isChatEvent(event)) {
       return handleChatEvent(event);
-    } else if (isSlackEvent(event)) {
+    } else if (event.path === '/message') {
       return handleSlackEvent(event);
-    }
-
-    // TODO: remove this once we have a better way to update the channel mapping
-    if (event.path === '/update') {
+    } else if (event.path === '/update') {
       await updateChannelMapping();
       return {
         body: 'ok',
