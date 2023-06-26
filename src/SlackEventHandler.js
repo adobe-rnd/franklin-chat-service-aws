@@ -22,13 +22,6 @@ function isMessage(event) {
 export async function handleSlackEvent(event) {
   console.trace(`handling slack event: ${JSON.stringify(event, null, 2)}`);
 
-  if (!isSlackEvent(event)) {
-    console.error('not a slack event');
-    return {
-      statusCode: 404,
-    };
-  }
-
   const payload = JSON.parse(event.body);
   if (payload.challenge) {
     console.log(`handling challenge: ${payload.challenge}`);

@@ -11,9 +11,14 @@
  */
 import { handleSlackEvent } from './SlackEventHandler.js';
 import { handleChatEvent } from './ChatEventHandler.js';
+import { updateChannelMapping } from './ChannelMapping.js';
 
 function isChatEvent(event) {
   return !!event.requestContext.routeKey;
+}
+
+function isSlackEvent(event) {
+  return event.path === '/message';
 }
 
 export const handler = async (event) => {
@@ -21,8 +26,22 @@ export const handler = async (event) => {
   try {
     if (isChatEvent(event)) {
       return handleChatEvent(event);
+    } else if (isSlackEvent(event)) {
+      return handleSlackEvent(event);
     }
-    return handleSlackEvent(event);
+
+    // TODO: remove this once we have a better way to update the channel mapping
+    if (event.path === '/update') {
+      await updateChannelMapping();
+      return {
+        statusCode: 200,
+      };
+    }
+
+    console.error(`unhandled event: ${JSON.stringify(event, null, 2)}`);
+    return {
+      statusCode: 404,
+    };
   } catch (e) {
     console.error(e);
     return { statusCode: 500, body: 'Internal Server Error' };

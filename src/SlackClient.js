@@ -113,10 +113,6 @@ async function slackToInternalMessages(slackMessages) {
   return [];
 }
 
-export function isSlackEvent(event) {
-  return event.path === '/message';
-}
-
 export async function postToChannel(channelId, message) {
   const { ts } = await slackClient.client.chat.postMessage({
     token: process.env.SLACK_BOT_TOKEN,
