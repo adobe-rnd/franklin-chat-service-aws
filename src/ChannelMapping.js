@@ -13,7 +13,7 @@ import { deleteItem, getAllItems, putItem } from './DocumentClient.js';
 
 const { CHANNEL_MAPPING_URL } = process.env;
 
-const CHANNELS_TABLE_NAME = 'chat-channels';
+const CHANNELS_TABLE_NAME = 'aem-customer-chat-channels';
 
 async function fetchChannelMapping() {
   console.debug(`reading channel mapping from url ${CHANNEL_MAPPING_URL}`);
@@ -62,5 +62,9 @@ export async function updateChannelMapping() {
  */
 export async function getChannelMapping() {
   const rules = await getAllItems(CHANNELS_TABLE_NAME);
+  if (rules.Items.length === 0) {
+    console.debug('no channel mapping found, updating...');
+    await updateChannelMapping();
+  }
   return new Map(rules.Items.map(({ domain, channelId }) => [domain, channelId]));
 }

@@ -7,10 +7,10 @@
   "scripts": {
     "build": "rm -rf dist && esbuild --bundle ./src/index.js --minify --sourcemap=inline --platform=node --target=node16.14 --outdir=dist",
     "package": "npm run build && rm -rf function.zip && cd dist; zip -rq ../function.zip ../package.json .",
-    "deploy:env": "source .env && aws lambda update-function-configuration --no-cli-pager --function-name TestFunction --environment \"Variables={SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET,SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN,SLACK_ADMIN_CHANNEL=$SLACK_ADMIN_CHANNEL,MAGIC_LINK_API_KEY=$MAGIC_LINK_API_KEY,MAGIC_LINK_TEST_MODE=$MAGIC_LINK_TEST_MODE,CHANNEL_MAPPING_URL=$CHANNEL_MAPPING_URL,API_GATEWAY_URL=$API_GATEWAY_URL}\"",
-    "deploy:code": "npm run package && aws lambda update-function-code --no-cli-pager --function-name TestFunction --zip-file fileb://function.zip",
+    "deploy:env": "source .env && aws lambda update-function-configuration --no-cli-pager --function-name aem-customer-chat-service --environment \"Variables={SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET,SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN,SLACK_ADMIN_CHANNEL=$SLACK_ADMIN_CHANNEL,MAGIC_LINK_API_KEY=$MAGIC_LINK_API_KEY,CHANNEL_MAPPING_URL=$CHANNEL_MAPPING_URL,API_GATEWAY_URL=$API_GATEWAY_URL}\"",
+    "deploy:code": "npm run package && aws lambda update-function-code --no-cli-pager --function-name aem-customer-chat-service --zip-file fileb://function.zip",
     "deploy": "npm run deploy:code && npm run deploy:env",
-    "logs": "aws logs tail /aws/lambda/TestFunction",
+    "logs": "aws logs tail /aws/lambda/aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix"
   },

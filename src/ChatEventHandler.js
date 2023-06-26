@@ -19,7 +19,7 @@ import {
   getChannelInfo, getHistory, getReplies, postToAdminChannel, postToChannel,
 } from './SlackClient.js';
 
-export const CONNECTIONS_TABLE_NAME = 'chat-connections';
+export const CONNECTIONS_TABLE_NAME = 'aem-customer-chat-connections';
 
 function getEmailDomain(email) {
   return email.split('@')[1];

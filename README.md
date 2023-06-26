@@ -22,6 +22,15 @@
 - Deploy to AWS lambda:
   - `npm run deploy`
 
+## AWS resources
+- aem-customer-chat-service: lambda function
+- aem-customer-chat-service-role-br9mksga: lambda function role
+  - AmazonDynamoDBFullAccess: DynamoDB access
+  - AmazonAPIGatewayInvokeFullAccess: API Gateway access
+- aem-customer-chat-rest: API Gateway REST API
+- aem-customer-chat-ws: API Gateway WebSocket API
+- aem-customer-chat-connections: DynamoDB table
+- aem-customer-chat-channels: DynamoDB table
 
 ## Troubleshooting
 To see the logs of the deployed lambda function:
