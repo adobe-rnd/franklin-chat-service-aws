@@ -34,6 +34,7 @@ export const handler = async (event) => {
     if (event.path === '/update') {
       await updateChannelMapping();
       return {
+        body: 'ok',
         statusCode: 200,
       };
     }
