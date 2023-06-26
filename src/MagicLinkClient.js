@@ -14,12 +14,7 @@ import * as magic from '@magic-sdk/admin';
 const { MAGIC_LINK_API_KEY } = process.env;
 console.debug(`Magic Link API Key: ${MAGIC_LINK_API_KEY}`);
 
-const { MAGIC_LINK_TEST_MODE } = process.env;
-console.debug(`Magic Link Test Mode: ${MAGIC_LINK_TEST_MODE}`);
-
-const magicClient = new magic.Magic(MAGIC_LINK_API_KEY, {
-  testMode: MAGIC_LINK_TEST_MODE === 'true',
-});
+const magicClient = new magic.Magic(MAGIC_LINK_API_KEY);
 
 export async function getEmailByToken(token) {
   try {
