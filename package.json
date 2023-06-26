@@ -1,0 +1,31 @@
+{
+  "name": "franklin-chat-service-aws",
+  "version": "0.0.1",
+  "description": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "build": "rm -rf dist && esbuild --bundle ./src/index.js --minify --sourcemap=inline --platform=node --target=node16.14 --outdir=dist",
+    "package": "npm run build && rm -rf function.zip && cd dist; zip -rq ../function.zip ../package.json .",
+    "deploy:env": "source .env && aws lambda update-function-configuration --no-cli-pager --function-name TestFunction --environment \"Variables={SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET,SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN,SLACK_ADMIN_CHANNEL=$SLACK_ADMIN_CHANNEL,MAGIC_LINK_API_KEY=$MAGIC_LINK_API_KEY,MAGIC_LINK_TEST_MODE=$MAGIC_LINK_TEST_MODE,CHANNEL_MAPPING_URL=$CHANNEL_MAPPING_URL,API_GATEWAY_URL=$API_GATEWAY_URL}\"",
+    "deploy:code": "npm run package && aws lambda update-function-code --no-cli-pager --function-name TestFunction --zip-file fileb://function.zip",
+    "deploy": "npm run deploy:code && npm run deploy:env",
+    "logs": "aws logs tail /aws/lambda/TestFunction",
+    "lint": "eslint src/**/*.js",
+    "fix": "eslint src/**/*.js --fix"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "3.357.0",
+    "@aws-sdk/client-dynamodb": "3.357.0",
+    "@aws-sdk/lib-dynamodb": "3.358.0",
+    "@magic-sdk/admin": "1.10.0",
+    "@slack/bolt": "3.13.1"
+  },
+  "devDependencies": {
+    "@adobe/eslint-config-helix": "2.0.2",
+    "esbuild": "0.18.6",
+    "eslint": "8.43.0"
+  }
+}
