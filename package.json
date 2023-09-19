@@ -7,15 +7,25 @@
   "scripts": {
     "build": "rm -rf dist && esbuild --bundle ./src/index.js --minify --sourcemap=inline --platform=node --target=node16.14 --outdir=dist",
     "package": "npm run build && rm -rf function.zip && cd dist; zip -rq ../function.zip ../package.json .",
-    "deploy:env": "source .env && aws lambda update-function-configuration --no-cli-pager --function-name aem-customer-chat-service --environment \"Variables={SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET,SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN,SLACK_ADMIN_CHANNEL=$SLACK_ADMIN_CHANNEL,MAGIC_LINK_API_KEY=$MAGIC_LINK_API_KEY,CHANNEL_MAPPING_URL=$CHANNEL_MAPPING_URL,API_GATEWAY_URL=$API_GATEWAY_URL}\"",
-    "deploy:code": "npm run package && aws lambda update-function-code --no-cli-pager --function-name aem-customer-chat-service --zip-file fileb://function.zip",
-    "deploy": "npm run deploy:code && npm run deploy:env",
+    "deploy-ci": "hedy -v --deploy --pkgVersion=dev$CIRCLE_BUILD_NUM -l dev --params-file=.env",
+    "deploy": "hedy -v --deploy --aws-region=us-east-1 --params-file=.env",
     "logs": "aws logs tail /aws/lambda/aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix"
   },
+  "wsk": {
+    "nodeVersion": 18,
+    "target": "aws",
+    "name": "helix-services/aem-customer-chat-service@${version}",
+    "testUrl": "/_status_check/healthcheck.json",
+    "memory": 256,
+    "awsRole!important": "arn:aws:iam::282898975672:role/service-role/aem-customer-chat-service-role-br9mksga",
+    "awsDeployTemplate": "helix-tier3-deploy-template",
+    "fastlyServiceId!important": "",
+    "adapterFile": "./src/adapter.js"
+  },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "3.357.0",
     "@aws-sdk/client-dynamodb": "3.357.0",
@@ -25,7 +35,13 @@
   },
   "devDependencies": {
     "@adobe/eslint-config-helix": "2.0.2",
+    "@adobe/helix-deploy": "9.3.4",
+    "@adobe/semantic-release-coralogix": "1.1.26",
+    "@semantic-release/changelog": "6.0.3",
+    "@semantic-release/exec": "6.0.3",
+    "@semantic-release/git": "10.0.1",
     "esbuild": "0.18.6",
-    "eslint": "8.43.0"
+    "eslint": "8.43.0",
+    "semantic-release": "22.0.0"
   }
 }
