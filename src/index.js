@@ -44,9 +44,11 @@ export const handler = async (event) => {
 
   return {
     headers: {
-      'Access-Control-Allow-Origin': 'http://localhost:8080',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': '*',
+      'Access-Control-Allow-Credentials': 'false',
+      'Access-Control-Allow-Methods': 'OPTIONS,GET,PUT,POST,DELETE',
+      ...res,
     },
-    ...res,
   };
 };
