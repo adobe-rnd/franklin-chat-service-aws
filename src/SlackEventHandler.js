@@ -12,7 +12,7 @@
 import { GoneException } from '@aws-sdk/client-apigatewaymanagementapi';
 import { deleteItem, getAllItems } from './DocumentClient.js';
 import { postToConnection } from './GatewayClient.js';
-import { isSlackEvent, slackToInternalMessage } from './SlackClient.js';
+import { slackToInternalMessage } from './SlackClient.js';
 import { CONNECTIONS_TABLE_NAME } from './ChatEventHandler.js';
 
 function isMessage(event) {
