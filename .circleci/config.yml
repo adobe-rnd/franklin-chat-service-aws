@@ -69,7 +69,7 @@ jobs:
       - run:
           name: Setup Environment
           command: |
-            $(echo $ENV_DEVELOPMENT | base64 -d) > .env
+            echo $ENV_DEVELOPMENT | base64 -d > .env
       - run:
           name: Branch Deployment
           command: npm run deploy-ci
