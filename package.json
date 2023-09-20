@@ -9,7 +9,7 @@
     "package": "npm run build && rm -rf function.zip && cd dist; zip -rq ../function.zip ../package.json .",
     "deploy-ci": "hedy -v --deploy --aws-region=us-east-1 --pkgVersion=dev$CIRCLE_BUILD_NUM -l dev --params-file=.env",
     "deploy": "hedy -v --deploy --aws-region=us-east-1 --params-file=.env",
-    "logs": "aws logs tail /aws/lambda/aem-customer-chat-service",
+    "logs": "aws logs tail /aws/lambda/helix-services--aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix"
   },

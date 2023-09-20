@@ -8,20 +8,21 @@
 ## Pre-requisites
 - AWS CLI: https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
 
-## Deploying to AWS lambda
-- Add the following properties to `.env`
-  ```bash
-    SLACK_SIGNING_SECRET=...
-    SLACK_BOT_TOKEN=...
-    SLACK_ADMIN_CHANNEL=...
-    MAGIC_LINK_API_KEY=...
-    CHANNEL_MAPPING_URL=...
-    API_GATEWAY_URL=...
-  ```
+## Manual deployement to AWS lambda
+- Rename `.env-default` file to `.env` and set the values. 
 - Configure AWS credentials:
   - `aws configure`
 - Deploy to AWS lambda:
   - `npm run deploy`
+
+## CircleCI setup
+
+In the CircleCI settings of the project, there are 2 env variables: `ENV_DEVELOPMENT` and `ENV_PRODUCTION`. They contain the base64 encoded version of the .env file content. To update the value:
+- rename `.env-default` file to `.env` and sets the environment variable values
+- run `cat .env | base64 | pbcopy`
+- delete the environment variable you need to update
+- create a new environment variable
+- paste into the value field
 
 ## AWS resources
 - aem-customer-chat-service: lambda function
