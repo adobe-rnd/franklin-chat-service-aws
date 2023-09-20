@@ -12,9 +12,9 @@
 module.exports = {
   root: true,
   extends: '@adobe/helix',
-  "rules": {
-    "no-console": "off",
-    "no-unused-vars": "off",
-    "arrow-body-style": "off",
-  }
+  rules: {
+    'no-console': 'off',
+    'no-unused-vars': 'off',
+    'arrow-body-style': 'off',
+  },
 };
