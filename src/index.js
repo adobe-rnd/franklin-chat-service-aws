@@ -14,7 +14,7 @@ import { handleChatEvent } from './ChatEventHandler.js';
 import { updateChannelMapping } from './ChannelMapping.js';
 
 function isChatEvent(event) {
-  return !!event.requestContext.routeKey;
+  return !!event.requestContext?.routeKey;
 }
 
 export const handler = async (event) => {
