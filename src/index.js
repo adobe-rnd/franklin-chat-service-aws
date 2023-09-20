@@ -19,25 +19,34 @@ function isChatEvent(event) {
 
 export const handler = async (event) => {
   console.trace(JSON.stringify(event, null, 2));
+  let res;
   try {
     if (isChatEvent(event)) {
-      return handleChatEvent(event);
+      res = handleChatEvent(event);
     } else if (event.path === '/message') {
-      return handleSlackEvent(event);
+      res = handleSlackEvent(event);
     } else if (event.path === '/update') {
       await updateChannelMapping();
-      return {
+      res = {
         body: 'ok',
         statusCode: 200,
       };
+    } else {
+      res = {
+        statusCode: 404,
+      };
+      console.error(`unhandled event: ${JSON.stringify(event, null, 2)}`);
     }
-
-    console.error(`unhandled event: ${JSON.stringify(event, null, 2)}`);
-    return {
-      statusCode: 404,
-    };
   } catch (e) {
     console.error(e);
-    return { statusCode: 500, body: 'Internal Server Error' };
+    res = { statusCode: 500, body: 'Internal Server Error' };
   }
+
+  return {
+    headers: {
+      'Access-Control-Allow-Origin': 'http://localhost:8080',
+      'Access-Control-Allow-Headers': '*',
+    },
+    ...res,
+  };
 };
