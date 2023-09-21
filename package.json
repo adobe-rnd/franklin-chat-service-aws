@@ -8,7 +8,7 @@
     "build": "rm -rf dist && esbuild --bundle ./src/index.js --minify --sourcemap=inline --platform=node --target=node16.14 --outdir=dist",
     "package": "npm run build && rm -rf function.zip && cd dist; zip -rq ../function.zip ../package.json .",
     "deploy-ci": "hedy -v --deploy --aws-region=us-east-1 --pkgVersion=dev$CIRCLE_BUILD_NUM -l dev --params-file=.env",
-    "deploy": "hedy -v --deploy --aws-region=us-east-1 -l dev prod --params-file=.env",
+    "deploy": "hedy -v --deploy --aws-region=us-east-1 -l prod --params-file=.env",
     "logs": "aws logs tail /aws/lambda/helix-services--aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix"
