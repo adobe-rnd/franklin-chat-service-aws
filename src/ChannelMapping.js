@@ -36,14 +36,14 @@ export async function fetchChannelMapping() {
     }));
   }
 
-  console.warn('No data found.');
+  console.warn('No channels fetched');
   return [];
 }
 
 /*
   * Writes the channel mapping to the DynamoDB table.
  */
-export async function setChannelMapping(rules) {
+export async function setChannelMapping(newRules) {
   console.debug('deleting all channel mappings...');
   const existingRules = await getAllItems(CHANNELS_TABLE_NAME);
   await Promise.all(existingRules.Items.map(({ domain }) => {
@@ -51,7 +51,7 @@ export async function setChannelMapping(rules) {
   }));
 
   console.debug('writing channel mappings...');
-  await Promise.all(rules.map(({ domain, channelId }) => putItem(CHANNELS_TABLE_NAME, {
+  await Promise.all(newRules.map(({ domain, channelId }) => putItem(CHANNELS_TABLE_NAME, {
     domain,
     channelId,
   })));
@@ -62,5 +62,5 @@ export async function setChannelMapping(rules) {
  */
 export async function getChannelMapping() {
   const rules = await getAllItems(CHANNELS_TABLE_NAME);
-  return new Map(rules.Items.map(({ domain, channelId }) => [domain, channelId]));
+  return rules.Items.map(({ domain, channelId }) => ({ domain, channelId }));
 }

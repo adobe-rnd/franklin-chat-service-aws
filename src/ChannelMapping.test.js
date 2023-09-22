@@ -130,8 +130,8 @@ describe('ChannalMapping', () => {
 
       const result = await getChannelMapping();
 
-      expect(result.get('example.com')).toBe('1234');
-      expect(result.get('test.com')).toBe('5678');
+      expect(result[0]).toEqual(mockItems[0]);
+      expect(result[1]).toEqual(mockItems[1]);
     });
 
     it('returns an empty map if no items are present', async () => {
@@ -139,7 +139,7 @@ describe('ChannalMapping', () => {
 
       const result = await getChannelMapping();
 
-      expect(result.size).toBe(0);
+      expect(result.length).toBe(0);
     });
   });
 });
