@@ -13,7 +13,7 @@
     "logs": "aws logs tail /aws/lambda/aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix",
-    "test": "jest --coverage --collectCoverageFrom src/**/*.js"
+    "test": "jest --coverage --collectCoverageFrom src/**/*.js --setupFilesAfterEnv ./jest.setup.cjs"
   },
   "author": "",
   "license": "ISC",

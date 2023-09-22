@@ -21,7 +21,6 @@ import {
 } from './GatewayClient.js';
 
 jest.mock('@aws-sdk/client-apigatewaymanagementapi', () => {
-  process.env.API_GATEWAY_URL = 'https://example.com';
   const originalModule = jest.requireActual('@aws-sdk/client-apigatewaymanagementapi');
   return {
     __esModule: true,

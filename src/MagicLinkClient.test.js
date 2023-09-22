@@ -14,17 +14,14 @@ import { getEmailByToken } from './MagicLinkClient.js';
 
 const USER_EMAIL = 'test@example.com';
 
-jest.mock('@magic-sdk/admin', () => {
-  process.env.MAGIC_LINK_API_KEY = 'test-api-key';
-  return {
-    // eslint-disable-next-line func-names
-    Magic: jest.fn().mockImplementation(function () {
-      this.users = {
-        getMetadataByToken: jest.fn(),
-      };
-    }),
-  };
-});
+jest.mock('@magic-sdk/admin', () => ({
+  // eslint-disable-next-line func-names
+  Magic: jest.fn().mockImplementation(function () {
+    this.users = {
+      getMetadataByToken: jest.fn(),
+    };
+  }),
+}));
 
 const magicInstanceMock = Magic.mock.instances[0];
 
