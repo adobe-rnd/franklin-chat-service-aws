@@ -15,6 +15,7 @@ import { getEmailByToken } from './MagicLinkClient.js';
 const USER_EMAIL = 'test@example.com';
 
 jest.mock('@magic-sdk/admin', () => {
+  process.env.MAGIC_LINK_API_KEY = 'test-api-key';
   return {
     // eslint-disable-next-line func-names
     Magic: jest.fn().mockImplementation(function () {
@@ -32,8 +33,7 @@ describe('getEmailByToken', () => {
     jest.clearAllMocks();
   });
 
-  it('uses correct api key', async () => {
-    await getEmailByToken('some-token');
+  it('get created with the correct API key', async () => {
     expect(Magic).toHaveBeenCalledWith(process.env.MAGIC_LINK_API_KEY);
   });
 
