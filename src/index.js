@@ -14,7 +14,9 @@ import { handleChatEvent } from './ChatEventHandler.js';
 import { updateChannelMapping } from './ChannelMapping.js';
 
 function isChatEvent(event) {
-  return !!event.requestContext?.routeKey;
+  return event.requestContext?.eventType === 'MESSAGE'
+    || event.requestContext?.eventType === 'CONNECT'
+    || event.requestContext?.eventType === 'DISCONNECT';
 }
 
 export const handler = async (event) => {
@@ -22,9 +24,9 @@ export const handler = async (event) => {
   try {
     if (isChatEvent(event)) {
       return handleChatEvent(event);
-    } else if (event.path === '/message') {
+    } else if (event.path === '/message' || event.pathParameters?.path === 'message') {
       return handleSlackEvent(event);
-    } else if (event.path === '/update') {
+    } else if (event.path === '/update' || event.pathParameters?.path === 'message') {
       await updateChannelMapping();
       return {
         body: 'ok',
