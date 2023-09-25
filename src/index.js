@@ -26,7 +26,7 @@ export const handler = async (event) => {
       return handleChatEvent(event);
     } else if (event.path === '/message' || event.pathParameters?.path === 'message') {
       return handleSlackEvent(event);
-    } else if (event.path === '/update' || event.pathParameters?.path === 'message') {
+    } else if (event.path === '/update' || event.pathParameters?.path === 'update') {
       await updateChannelMapping();
       return {
         body: 'ok',
