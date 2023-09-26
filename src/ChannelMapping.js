@@ -13,9 +13,12 @@ import { deleteItem, getAllItems, putItem } from './DocumentClient.js';
 
 const { CHANNEL_MAPPING_URL } = process.env;
 
-const CHANNELS_TABLE_NAME = 'aem-customer-chat-channels';
+export const CHANNELS_TABLE_NAME = 'aem-customer-chat-channels';
 
-async function fetchChannelMapping() {
+/*
+  * Reads the channel mapping from the Google Sheet.
+ */
+export async function fetchChannelMapping() {
   console.debug(`reading channel mapping from url ${CHANNEL_MAPPING_URL}`);
 
   const response = await fetch(CHANNEL_MAPPING_URL);
@@ -33,38 +36,31 @@ async function fetchChannelMapping() {
     }));
   }
 
-  console.warn('No data found.');
+  console.warn('No channels fetched');
   return [];
 }
 
 /*
-  * Fetches the channel mapping from the Google Sheet and updates the DynamoDB table.
+  * Writes the channel mapping to the DynamoDB table.
  */
-export async function updateChannelMapping() {
-  console.debug('fetching channel mapping...');
-  const channelMapping = await fetchChannelMapping();
-
+export async function setChannelMapping(newRules) {
   console.debug('deleting all channel mappings...');
-  const rules = await getAllItems(CHANNELS_TABLE_NAME);
-  await Promise.all(rules.Items.map(({ domain, channelId }) => {
+  const existingRules = await getAllItems(CHANNELS_TABLE_NAME);
+  await Promise.all(existingRules.Items.map(({ domain }) => {
     return deleteItem(CHANNELS_TABLE_NAME, { domain });
   }));
 
   console.debug('writing channel mappings...');
-  await Promise.all(channelMapping.map(({ domain, channelId }) => putItem(CHANNELS_TABLE_NAME, {
+  await Promise.all(newRules.map(({ domain, channelId }) => putItem(CHANNELS_TABLE_NAME, {
     domain,
     channelId,
   })));
 }
 
 /*
-  * Returns a map of email domain to Slack channel ID.
+  * Reads the channel mapping from the DynamoDB table.
  */
 export async function getChannelMapping() {
   const rules = await getAllItems(CHANNELS_TABLE_NAME);
-  if (rules.Items.length === 0) {
-    console.debug('no channel mapping found, updating...');
-    await updateChannelMapping();
-  }
-  return new Map(rules.Items.map(({ domain, channelId }) => [domain, channelId]));
+  return rules.Items.map(({ domain, channelId }) => ({ domain, channelId }));
 }
