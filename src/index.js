@@ -11,14 +11,29 @@
  */
 import { handleSlackEvent } from './SlackEventHandler.js';
 import { handleChatEvent } from './ChatEventHandler.js';
-import { updateChannelMapping } from './ChannelMapping.js';
+import { fetchChannelMapping, setChannelMapping } from './ChannelMapping.js';
 
+/*
+  * This function is used to determine if an event is a chat event.
+ */
 function isChatEvent(event) {
   return event.requestContext?.eventType === 'MESSAGE'
     || event.requestContext?.eventType === 'CONNECT'
     || event.requestContext?.eventType === 'DISCONNECT';
 }
 
+/*
+  * This function is used to update the channel mapping.
+ */
+export async function updateChannelMapping() {
+  const rules = await fetchChannelMapping();
+  console.log(`found ${rules.length} mapping rules`);
+  await setChannelMapping(rules);
+}
+
+/*
+  * This function is used to handle all incoming events.
+ */
 export const handler = async (event) => {
   console.trace(JSON.stringify(event, null, 2));
   try {

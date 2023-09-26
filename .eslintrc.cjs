@@ -17,4 +17,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'arrow-body-style': 'off',
   },
+  env: {
+    jest: true,
+  },
 };

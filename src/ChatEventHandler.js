@@ -9,7 +9,7 @@
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
-import { getChannelMapping } from './ChannelMapping.js';
+import { fetchChannelMapping, getChannelMapping, setChannelMapping } from './ChannelMapping.js';
 import { getEmailByToken } from './MagicLinkClient.js';
 import { deleteConnection } from './GatewayClient.js';
 import {
@@ -23,6 +23,17 @@ export const CONNECTIONS_TABLE_NAME = 'aem-customer-chat-connections';
 
 function getEmailDomain(email) {
   return email.split('@')[1];
+}
+
+async function getChannels() {
+  console.debug('getting channels...');
+  let channels = await getChannelMapping();
+  if (channels.length === 0) {
+    console.debug('no channel mapping found, fetching from Google Sheet...');
+    channels = await fetchChannelMapping();
+    await setChannelMapping(channels);
+  }
+  return new Map(channels.map(({ domain, channelId }) => [domain, channelId]));
 }
 
 async function handleNewConnection(connectionId, token) {
@@ -81,9 +92,9 @@ async function handleJoinMessage(message, context) {
   const { connectionId, email } = context;
 
   const domain = getEmailDomain(email);
+  const channels = await getChannels();
 
   console.debug(`getting channel by domain: ${domain}`);
-  const channels = await getChannelMapping();
   const channel = channels.get(domain);
   if (!channel) {
     console.error(`no channel mapping found for ${email}`);
