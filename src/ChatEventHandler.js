@@ -117,7 +117,7 @@ async function handleJoinMessage(message, context) {
   const { teamId, channelName } = await getChannelInfo(channel);
 
   console.debug('posting to admin channel...');
-  await postToAdminChannel(`User ${email} joined channel #${channelName} / ${channel}`);
+  await postToAdminChannel(`User ${email} joined channel <a href="#${channelName}">#${channelName}</a>`);
 
   return {
     email,
