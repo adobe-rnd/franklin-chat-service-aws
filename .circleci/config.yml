@@ -46,6 +46,10 @@ jobs:
           command: git checkout -- package-lock.json
       - helix-post-deploy/config-env
       - run:
+          name: Setup production deployment environment variables
+          command: |
+            echo $ENV_PRODUCTION | base64 -d > .env
+      - run:
           name: Semantic Release
           command: npm run semantic-release
       - store_test_results:
@@ -67,7 +71,7 @@ jobs:
           name: revert changes to package-lock.json
           command: git checkout -- package-lock.json
       - run:
-          name: Setup Environment
+          name: Setup development deployment environment variables
           command: |
             echo $ENV_DEVELOPMENT | base64 -d > .env
       - run:
