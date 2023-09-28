@@ -15,7 +15,7 @@ import {
   fetchChannelMapping,
   setChannelMapping,
   getChannelMapping,
-  CHANNELS_TABLE_NAME,
+  DB_CHANNELS_TABLE_NAME,
 } from './ChannelMapping.js';
 
 jest.mock('./DocumentClient.js', () => ({
@@ -89,12 +89,12 @@ describe('ChannalMapping', () => {
 
       // Expect the old rules to be deleted
       expect(deleteItem).toHaveBeenCalledTimes(1);
-      expect(deleteItem).toHaveBeenCalledWith(CHANNELS_TABLE_NAME, { domain: 'oldexample.com' });
+      expect(deleteItem).toHaveBeenCalledWith(DB_CHANNELS_TABLE_NAME, { domain: 'oldexample.com' });
 
       // Expect the new rules to be set
       expect(putItem).toHaveBeenCalledTimes(2);
-      expect(putItem).toHaveBeenCalledWith(CHANNELS_TABLE_NAME, newRules[0]);
-      expect(putItem).toHaveBeenCalledWith(CHANNELS_TABLE_NAME, newRules[1]);
+      expect(putItem).toHaveBeenCalledWith(DB_CHANNELS_TABLE_NAME, newRules[0]);
+      expect(putItem).toHaveBeenCalledWith(DB_CHANNELS_TABLE_NAME, newRules[1]);
     });
 
     it('sets new rules only if no existing rules are present', async () => {
@@ -114,8 +114,8 @@ describe('ChannalMapping', () => {
 
       // Expect the new rules to be set
       expect(putItem).toHaveBeenCalledTimes(2);
-      expect(putItem).toHaveBeenCalledWith(CHANNELS_TABLE_NAME, newRules[0]);
-      expect(putItem).toHaveBeenCalledWith(CHANNELS_TABLE_NAME, newRules[1]);
+      expect(putItem).toHaveBeenCalledWith(DB_CHANNELS_TABLE_NAME, newRules[0]);
+      expect(putItem).toHaveBeenCalledWith(DB_CHANNELS_TABLE_NAME, newRules[1]);
     });
   });
 

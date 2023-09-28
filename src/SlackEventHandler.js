@@ -13,7 +13,7 @@ import { GoneException } from '@aws-sdk/client-apigatewaymanagementapi';
 import { deleteItem, getAllItems } from './DocumentClient.js';
 import { postToConnection } from './GatewayClient.js';
 import { slackToInternalMessage } from './SlackClient.js';
-import { CONNECTIONS_TABLE_NAME } from './ChatEventHandler.js';
+import { DB_CONNECTIONS_TABLE_NAME } from './ChatEventHandler.js';
 
 function isMessage(event) {
   return event.type === 'message' && event.text && (!event.subtype || event.subtype === 'bot_message');
@@ -34,7 +34,7 @@ export async function handleSlackEvent(event) {
   if (payload.event && isMessage(payload.event)) {
     console.trace(`handling slack message: ${JSON.stringify(payload.event, null, 2)}`);
 
-    const connections = await getAllItems(CONNECTIONS_TABLE_NAME);
+    const connections = await getAllItems(DB_CONNECTIONS_TABLE_NAME);
     console.debug(`found ${connections.Items.length} connections`);
 
     const internalMessage = await slackToInternalMessage(payload.event);
@@ -53,7 +53,7 @@ export async function handleSlackEvent(event) {
       } catch (e) {
         if (e instanceof GoneException) {
           console.log(`found stale connection, deleting ${connectionId}`);
-          await deleteItem(CONNECTIONS_TABLE_NAME, { connectionId });
+          await deleteItem(DB_CONNECTIONS_TABLE_NAME, { connectionId });
         } else {
           console.error(`failed to send message to connection ${connectionId}`, e);
           throw e;
