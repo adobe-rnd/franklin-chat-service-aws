@@ -4,4 +4,4 @@ dist/
 .idea/
 .vscode/
 function.zip
-.env
+.env*

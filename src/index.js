@@ -17,7 +17,9 @@ import { fetchChannelMapping, setChannelMapping } from './ChannelMapping.js';
   * This function is used to determine if an event is a chat event.
  */
 function isChatEvent(event) {
-  return !!event.requestContext.routeKey;
+  return event.requestContext?.eventType === 'MESSAGE'
+    || event.requestContext?.eventType === 'CONNECT'
+    || event.requestContext?.eventType === 'DISCONNECT';
 }
 
 /*
@@ -37,9 +39,9 @@ export const handler = async (event) => {
   try {
     if (isChatEvent(event)) {
       return handleChatEvent(event);
-    } else if (event.path === '/message') {
+    } else if (event.path === '/message' || event.pathParameters?.path === 'message') {
       return handleSlackEvent(event);
-    } else if (event.path === '/update') {
+    } else if (event.path === '/update' || event.pathParameters?.path === 'update') {
       await updateChannelMapping();
       return {
         body: 'ok',
