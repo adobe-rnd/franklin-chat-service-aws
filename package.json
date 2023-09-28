@@ -1,6 +1,6 @@
 {
   "name": "franklin-chat-service-aws",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "type": "commonjs",
   "main": "index.js",
