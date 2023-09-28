@@ -10,6 +10,7 @@
     "logs": "aws logs tail /aws/lambda/helix-services--aem-customer-chat-service",
     "lint": "eslint src/**/*.js",
     "fix": "eslint src/**/*.js --fix",
+    "semantic-release": "semantic-release",
     "test": "jest --coverage --collectCoverageFrom src/**/*.js --setupFilesAfterEnv ./jest.setup.cjs"
   },
   "wsk": {
