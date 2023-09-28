@@ -11,9 +11,7 @@
  */
 import { deleteItem, getAllItems, putItem } from './DocumentClient.js';
 
-const { CHANNEL_MAPPING_URL } = process.env;
-
-export const CHANNELS_TABLE_NAME = 'aem-customer-chat-channels';
+const { CHANNEL_MAPPING_URL, DB_CHANNELS_TABLE_NAME } = process.env;
 
 /*
   * Reads the channel mapping from the Google Sheet.
@@ -45,13 +43,13 @@ export async function fetchChannelMapping() {
  */
 export async function setChannelMapping(newRules) {
   console.debug('deleting all channel mappings...');
-  const existingRules = await getAllItems(CHANNELS_TABLE_NAME);
+  const existingRules = await getAllItems(DB_CHANNELS_TABLE_NAME);
   await Promise.all(existingRules.Items.map(({ domain }) => {
-    return deleteItem(CHANNELS_TABLE_NAME, { domain });
+    return deleteItem(DB_CHANNELS_TABLE_NAME, { domain });
   }));
 
   console.debug('writing channel mappings...');
-  await Promise.all(newRules.map(({ domain, channelId }) => putItem(CHANNELS_TABLE_NAME, {
+  await Promise.all(newRules.map(({ domain, channelId }) => putItem(DB_CHANNELS_TABLE_NAME, {
     domain,
     channelId,
   })));
@@ -61,6 +59,6 @@ export async function setChannelMapping(newRules) {
   * Reads the channel mapping from the DynamoDB table.
  */
 export async function getChannelMapping() {
-  const rules = await getAllItems(CHANNELS_TABLE_NAME);
+  const rules = await getAllItems(DB_CHANNELS_TABLE_NAME);
   return rules.Items.map(({ domain, channelId }) => ({ domain, channelId }));
 }

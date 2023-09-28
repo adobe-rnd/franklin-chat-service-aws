@@ -19,7 +19,7 @@ import {
   getChannelInfo, getHistory, getReplies, postToAdminChannel, postToChannel,
 } from './SlackClient.js';
 
-export const CONNECTIONS_TABLE_NAME = 'aem-customer-chat-connections';
+export const { DB_CONNECTIONS_TABLE_NAME } = process.env;
 
 function getEmailDomain(email) {
   return email.split('@')[1];
@@ -57,7 +57,7 @@ async function handleNewConnection(connectionId, token) {
   }
 
   console.debug('storing connection details...');
-  await putItem(CONNECTIONS_TABLE_NAME, {
+  await putItem(DB_CONNECTIONS_TABLE_NAME, {
     connectionId,
     email,
   });
@@ -71,12 +71,12 @@ async function handleDisconnect(connectionId) {
   console.log(`disconnect: ${connectionId}`);
 
   console.debug('getting email by connection id...');
-  const { Item: { email } } = await getItem(CONNECTIONS_TABLE_NAME, {
+  const { Item: { email } } = await getItem(DB_CONNECTIONS_TABLE_NAME, {
     connectionId,
   });
 
   console.debug('delete connection details...');
-  await deleteItem(CONNECTIONS_TABLE_NAME, {
+  await deleteItem(DB_CONNECTIONS_TABLE_NAME, {
     connectionId,
   });
 
@@ -107,7 +107,7 @@ async function handleJoinMessage(message, context) {
   }
 
   console.debug('storing connection details...');
-  await putItem(CONNECTIONS_TABLE_NAME, {
+  await putItem(DB_CONNECTIONS_TABLE_NAME, {
     connectionId,
     channelId: channel,
     email,
@@ -168,7 +168,7 @@ async function handleMessage(event) {
 
   console.debug('getting connection details...');
   const { Item: context } = await getItem(
-    CONNECTIONS_TABLE_NAME,
+    DB_CONNECTIONS_TABLE_NAME,
     { connectionId: event.requestContext.connectionId },
   );
 
