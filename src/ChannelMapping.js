@@ -11,7 +11,7 @@
  */
 import { deleteItem, getAllItems, putItem } from './DocumentClient.js';
 
-const { CHANNEL_MAPPING_URL, DB_CHANNELS_TABLE_NAME } = process.env;
+export const { CHANNEL_MAPPING_URL, DB_CHANNELS_TABLE_NAME } = process.env;
 
 /*
   * Reads the channel mapping from the Google Sheet.
