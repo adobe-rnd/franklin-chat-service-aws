@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/adobe/franklin-chat-service-aws/compare/v1.0.0...v1.1.0) (2023-09-28)
+
+
+### Features
+
+* spilt db tables per env ([#6](https://github.com/adobe/franklin-chat-service-aws/issues/6)) ([3e19c64](https://github.com/adobe/franklin-chat-service-aws/commit/3e19c64b2e3b43cf2d031dc9643caf94523fe594))
+
 # 1.0.0 (2023-09-28)
 
 
