@@ -91,11 +91,20 @@ async function handleDisconnect(connectionId) {
 async function handleJoinMessage(message, context) {
   const { connectionId, email } = context;
 
-  const domain = getEmailDomain(email);
   const channels = await getChannels();
 
-  console.debug(`getting channel by domain: ${domain}`);
-  const channel = channels.get(domain);
+  // check for admin access: set email address in mapping list
+  console.debug(`direct access - getting channel by full email: ${email}`);
+  let channel = channels.get(email);
+
+  if (channel) {
+    console.debug(`found direct access: ${email} -> ${channel}`);
+  } else {
+    const domain = getEmailDomain(email);
+    console.debug(`getting channel by domain: ${domain}`);
+    channel = channels.get(domain);
+  }
+
   if (!channel) {
     console.error(`no channel mapping found for ${email}`);
     await postToAdminChannel(`No channel mapping found for ${email}`);
@@ -114,7 +123,7 @@ async function handleJoinMessage(message, context) {
   });
 
   console.debug('posting to admin channel...');
-  await postToAdminChannel(`User ${email} joined channel ${channel}`);
+  await postToAdminChannel(`User ${email} joined channel <#${channel}>`);
 
   console.debug('getting channel info...');
   const { teamId, channelName } = await getChannelInfo(channel);
