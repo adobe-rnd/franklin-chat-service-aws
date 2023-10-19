@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/adobe/franklin-chat-service-aws/compare/v1.1.0...v1.2.0) (2023-10-19)
+
+
+### Features
+
+* admin improvements ([#7](https://github.com/adobe/franklin-chat-service-aws/issues/7)) ([edfd42e](https://github.com/adobe/franklin-chat-service-aws/commit/edfd42e8a93d74f66ba712643ad4a9edd8c8f6d6))
+
 # [1.1.0](https://github.com/adobe/franklin-chat-service-aws/compare/v1.0.0...v1.1.0) (2023-09-28)
 
 
