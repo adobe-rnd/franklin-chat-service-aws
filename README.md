@@ -1,6 +1,7 @@
 # Franklin Chat Service on AWS Lambda
 - Slack app:
   - https://api.slack.com/apps/AA4TSRLKV (AEM Engineering)
+  - https://api.slack.com/apps/A056A7R316Z (Adobe Enterprise Support)
 - Passwordless login: [MagicLink](https://dashboard.magic.link/app?cid=pDpB8lFitWJs6e-dh2Q5EJ3-nqRinvpEFWnh2dO4leU=)
 - E-mail to channel mapping: [Google Spreadsheet](https://drive.google.com/drive/u/2/folders/1MlfI4ghY9RdHUYf9xrX_7S_qdBEDEoaC)
 - To update channel mapping click [update](https://7kgloh485m.execute-api.us-east-1.amazonaws.com/development/update)
