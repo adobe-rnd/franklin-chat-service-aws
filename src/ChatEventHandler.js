@@ -90,6 +90,7 @@ async function handleDisconnect(connectionId) {
 
 async function handleJoinMessage(message, context) {
   const { connectionId, email } = context;
+  const clientVersion = message?.version || 'unknown';
 
   const channels = await getChannels();
 
@@ -123,7 +124,7 @@ async function handleJoinMessage(message, context) {
   });
 
   console.debug('posting to admin channel...');
-  await postToAdminChannel(`User ${email} joined channel <#${channel}>`);
+  await postToAdminChannel(`User ${email} joined channel <#${channel}> with client v${clientVersion}`);
 
   console.debug('getting channel info...');
   const { teamId, channelName } = await getChannelInfo(channel);
