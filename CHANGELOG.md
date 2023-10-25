@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/adobe/franklin-chat-service/compare/v1.2.0...v1.3.0) (2023-10-25)
+
+
+### Features
+
+* log client version ([#8](https://github.com/adobe/franklin-chat-service/issues/8)) ([c764c7e](https://github.com/adobe/franklin-chat-service/commit/c764c7e8f2159fc0d959089403c848f627719e7a))
+
 # [1.2.0](https://github.com/adobe/franklin-chat-service/compare/v1.1.0...v1.2.0) (2023-10-19)
 
 
