@@ -110,9 +110,6 @@ async function handleJoinMessage(message, context) {
     console.error(`no channel mapping found for ${email}`);
     await postToAdminChannel(`No channel mapping found for ${email}`);
 
-    // console.debug('disconnecting client');
-    // await deleteConnection(connectionId);
-
     throw new Error(403);
   }
 
@@ -205,17 +202,14 @@ async function handleMessage(event) {
         error = 'Not authorized';
       }
     } catch (er) {
-      // use exception message as error message
-      console.error('error while parsing code', er.message, er);
+      // ignore, use exception message as error message
     }
 
     console.error(`responding with code: ${code} and error: ${error}`);
     return {
       body: JSON.stringify({
-        data: {
-          error,
-          code,
-        },
+        error,
+        code,
         correlationId: message.correlationId,
       }),
       statusCode: 200,
