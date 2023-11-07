@@ -211,9 +211,10 @@ async function handleMessage(event) {
     return {
       body: JSON.stringify({
         error,
+        code,
         correlationId: message.correlationId,
       }),
-      statusCode: code,
+      statusCode: 200,
     };
   }
 }
