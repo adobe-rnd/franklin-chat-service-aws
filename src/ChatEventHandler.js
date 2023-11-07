@@ -208,8 +208,10 @@ async function handleMessage(event) {
     console.error(`responding with code: ${code} and error: ${error}`);
     return {
       body: JSON.stringify({
-        error,
-        code,
+        data: {
+          error,
+          code,
+        },
         correlationId: message.correlationId,
       }),
       statusCode: 200,
