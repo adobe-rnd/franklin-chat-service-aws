@@ -207,7 +207,7 @@ async function handleMessage(event) {
     } catch (er) {
       // use exception message as error message
     }
-    
+
     return {
       body: JSON.stringify({
         error,
