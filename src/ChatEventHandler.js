@@ -110,7 +110,7 @@ async function handleJoinMessage(message, context) {
     console.error(`no channel mapping found for ${email}`);
     await postToAdminChannel(`No channel mapping found for ${email}`);
 
-    throw new Error(403);
+    throw new Error('No channel mapping found');
   }
 
   console.debug('storing connection details...');
@@ -165,7 +165,7 @@ async function processMessage(type, data, context) {
     case 'replies':
       return handleRepliesMessage(data, context);
     default:
-      throw new Error(400);
+      throw new Error(`Unknown message type: ${type}`);
   }
 }
 
@@ -189,33 +189,15 @@ async function handleMessage(event) {
       statusCode: 200,
     };
   } catch (e) {
-    console.error('error while processing message', e.message, e);
-    let error = e.message;
-    let code = 500;
-    try {
-      code = parseInt(error, 10);
-      if (code === 400) {
-        error = `Unknow message type: ${message.type}`;
-      } else if (code === 403) {
-        error = 'Forbidden';
-      } else if (code === 401) {
-        error = 'Not authorized';
-      }
-    } catch (er) {
-      // ignore, use exception message as error message
-    }
+    console.error('error while processing message', e);
 
-    console.error(`responding with code: ${code} and error: ${error}`);
     return {
       body: JSON.stringify({
-        data: {
-          error,
-          code,
-        },
+        error: e.message,
         correlationId: message.correlationId,
       }),
       statusCode: 200,
-    };
+    }
   }
 }
 
