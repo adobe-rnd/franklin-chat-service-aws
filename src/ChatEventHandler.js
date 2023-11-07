@@ -190,7 +190,6 @@ async function handleMessage(event) {
     };
   } catch (e) {
     console.error('error while processing message', e);
-
     return {
       body: JSON.stringify({
         error: e.message,
