@@ -192,11 +192,11 @@ async function handleMessage(event) {
       statusCode: 200,
     };
   } catch (e) {
-    console.error('error while processing message', e);
+    console.error('error while processing message', e.message, e);
     let error = e.message;
     let code = 500;
     try {
-      code = parseInt(e.message, 10);
+      code = parseInt(error, 10);
       if (code === 400) {
         error = `Unknow message type: ${message.type}`;
       } else if (code === 403) {
@@ -206,8 +206,10 @@ async function handleMessage(event) {
       }
     } catch (er) {
       // use exception message as error message
+      console.error('error while parsing code', er.message, er);
     }
 
+    console.error(`responding with code: ${code} and error: ${error}`);
     return {
       body: JSON.stringify({
         data: {
