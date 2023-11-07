@@ -110,8 +110,8 @@ async function handleJoinMessage(message, context) {
     console.error(`no channel mapping found for ${email}`);
     await postToAdminChannel(`No channel mapping found for ${email}`);
 
-    console.debug('disconnecting client');
-    await deleteConnection(connectionId);
+    // console.debug('disconnecting client');
+    // await deleteConnection(connectionId);
 
     throw new Error(403);
   }
