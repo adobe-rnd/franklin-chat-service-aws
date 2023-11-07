@@ -113,7 +113,7 @@ async function handleJoinMessage(message, context) {
     console.debug('disconnecting client');
     await deleteConnection(connectionId);
 
-    throw new Error('No channel mapping found');
+    throw new Error(403);
   }
 
   console.debug('storing connection details...');
@@ -168,7 +168,7 @@ async function processMessage(type, data, context) {
     case 'replies':
       return handleRepliesMessage(data, context);
     default:
-      throw new Error(`Unknown message type: ${type}`);
+      throw new Error(400);
   }
 }
 
@@ -193,12 +193,27 @@ async function handleMessage(event) {
     };
   } catch (e) {
     console.error('error while processing message', e);
+    let error = e.message;
+    let code = 500;
+    try {
+      code = parseInt(e.message, 10);
+      if (code === 400) {
+        error = `Unknow message type: ${message.type}`;
+      } else if (code === 403) {
+        error = 'Forbidden';
+      } else if (code === 401) {
+        error = 'Not authorized';
+      }
+    } catch (er) {
+      // use exception message as error message
+    }
+    
     return {
       body: JSON.stringify({
-        error: e.message,
+        error,
         correlationId: message.correlationId,
       }),
-      statusCode: 200,
+      statusCode: code,
     };
   }
 }
