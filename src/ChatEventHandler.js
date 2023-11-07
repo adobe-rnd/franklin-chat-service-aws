@@ -197,7 +197,7 @@ async function handleMessage(event) {
         correlationId: message.correlationId,
       }),
       statusCode: 200,
-    }
+    };
   }
 }
 
