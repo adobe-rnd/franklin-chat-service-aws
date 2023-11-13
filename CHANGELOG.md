@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/adobe/franklin-chat-service/compare/v1.3.0...v1.3.1) (2023-11-13)
+
+
+### Bug Fixes
+
+* do not disconnect if no mapping found ([#10](https://github.com/adobe/franklin-chat-service/issues/10)) ([c549be1](https://github.com/adobe/franklin-chat-service/commit/c549be11eb8e56ba0117cc86e2df6179ce59bf01))
+
 # [1.3.0](https://github.com/adobe/franklin-chat-service/compare/v1.2.0...v1.3.0) (2023-10-25)
 
 
