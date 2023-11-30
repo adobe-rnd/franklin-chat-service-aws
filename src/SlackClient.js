@@ -11,6 +11,8 @@
  */
 import { App as SlackApp, AwsLambdaReceiver } from '@slack/bolt';
 
+const MAX_USERS = 250;
+
 const { SLACK_ADMIN_CHANNEL } = process.env;
 console.debug(`Slack admin channel: ${SLACK_ADMIN_CHANNEL}`);
 
@@ -156,4 +158,18 @@ export async function getReplies(ts, channel) {
     ts,
   });
   return slackToInternalMessages(replies.messages ?? []);
+}
+
+export async function getMembers(channelId) {
+  const members = await slackClient.client.conversations.members({
+    channel: channelId,
+    limit: MAX_USERS,
+  });
+
+  const memberIds = members.members ?? [];
+
+  return memberIds.map(async (memberId) => {
+    const user = await slackClient.client.users.info({ user: memberId });
+    return user.real_name;
+  });
 }
