@@ -11,6 +11,12 @@
  */
 import { App as SlackApp, AwsLambdaReceiver } from '@slack/bolt';
 
+const MAX_USERS = 250;
+
+const SUPPORTED_MESSAGE_SUBTYPES = [
+  'bot_message',
+];
+
 const { SLACK_ADMIN_CHANNEL } = process.env;
 console.debug(`Slack admin channel: ${SLACK_ADMIN_CHANNEL}`);
 
@@ -24,30 +30,19 @@ const slackClient = new SlackApp({
 });
 
 async function getUser(message) {
-  if (message.username) {
+  if (message.subtype === 'bot_message') {
     return {
+      id: message.bot_id,
       name: message.username,
     };
   }
-  if (message.user) {
-    const res = await slackClient.client.users.info({
-      user: message.user,
-    });
-
-    if (res) {
-      return {
-        name: res.user?.profile?.real_name,
-        icon: res.user?.profile?.image_48,
-      };
-    }
-  } else if (message.user_profile && message.user_profile.real_name) {
-    return {
-      name: message.user_profile.real_name,
-      icon: message.user_profile.image_48,
-    };
-  }
+  const { user } = await slackClient.client.users.info({
+    user: message.user,
+  });
   return {
-    name: 'Unknown',
+    id: message.user,
+    name: user.real_name,
+    icon: user.profile.image_48,
   };
 }
 
@@ -102,15 +97,18 @@ export async function slackToInternalMessage(slackMessage) {
 }
 
 async function slackToInternalMessages(slackMessages) {
-  const internalMessages = slackMessages.filter((message) => message.ts)
-    .filter((message) => message.subtype !== 'channel_join')
+  return Promise.all(Array.from(slackMessages
+    .filter((message) => message.ts)
+    .filter((message) => !message.subtype || SUPPORTED_MESSAGE_SUBTYPES.includes(message.subtype))
     .map(async (message) => {
-      return slackToInternalMessage(message);
-    });
-  if (internalMessages) {
-    return Promise.all(internalMessages);
-  }
-  return [];
+      try {
+        return await slackToInternalMessage(message);
+      } catch (e) {
+        console.error(`failed to convert slack message ${message.ts} to internal message`, e);
+        return null;
+      }
+    })
+    .filter((message) => message !== null)));
 }
 
 export async function postToChannel(channelId, message) {
@@ -156,4 +154,21 @@ export async function getReplies(ts, channel) {
     ts,
   });
   return slackToInternalMessages(replies.messages ?? []);
+}
+
+export async function getMembers(channelId) {
+  const members = await slackClient.client.conversations.members({
+    channel: channelId,
+    limit: MAX_USERS,
+  });
+
+  const memberIds = members.members ?? [];
+
+  return Promise.all(memberIds.map(async (memberId) => {
+    const { user } = await slackClient.client.users.info({ user: memberId });
+    return {
+      id: memberId,
+      name: user.real_name,
+    };
+  }));
 }

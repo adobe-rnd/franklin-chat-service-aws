@@ -16,7 +16,7 @@ import {
   deleteItem, getItem, putItem,
 } from './DocumentClient.js';
 import {
-  getChannelInfo, getHistory, getReplies, postToAdminChannel, postToChannel,
+  getChannelInfo, getHistory, getMembers, getReplies, postToAdminChannel, postToChannel,
 } from './SlackClient.js';
 
 export const { DB_CONNECTIONS_TABLE_NAME } = process.env;
@@ -154,6 +154,11 @@ async function handleRepliesMessage({ ts }, { channelId }) {
   return getReplies(ts, channelId);
 }
 
+async function handleMembersMessage({ channelId }) {
+  console.debug(`getting members for channel ${channelId}`);
+  return getMembers(channelId);
+}
+
 async function processMessage(type, data, context) {
   switch (type) {
     case 'join':
@@ -164,6 +169,8 @@ async function processMessage(type, data, context) {
       return handleHistoryMessage(data, context);
     case 'replies':
       return handleRepliesMessage(data, context);
+    case 'members':
+      return handleMembersMessage(context);
     default:
       throw new Error(`Unknown message type: ${type}`);
   }
