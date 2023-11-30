@@ -13,6 +13,10 @@ import { App as SlackApp, AwsLambdaReceiver } from '@slack/bolt';
 
 const MAX_USERS = 250;
 
+const SUPPORTED_MESSAGE_SUBTYPES = [
+  'bot_message',
+];
+
 const { SLACK_ADMIN_CHANNEL } = process.env;
 console.debug(`Slack admin channel: ${SLACK_ADMIN_CHANNEL}`);
 
@@ -26,31 +30,23 @@ const slackClient = new SlackApp({
 });
 
 async function getUser(message) {
-  if (message.username) {
+  if (message.subtype === 'bot_message') {
     return {
+      id: message.bot_id,
       name: message.username,
     };
   }
-  if (message.user) {
-    const res = await slackClient.client.users.info({
-      user: message.user,
-    });
-
-    if (res) {
-      return {
-        name: res.user?.profile?.real_name,
-        icon: res.user?.profile?.image_48,
-      };
-    }
-  } else if (message.user_profile && message.user_profile.real_name) {
+  const res = await slackClient.client.users.info({
+    user: message.user,
+  });
+  if (res) {
     return {
-      name: message.user_profile.real_name,
-      icon: message.user_profile.image_48,
+      id: res.user.id,
+      name: res.user.real_name,
+      icon: res.user.profile.image_48,
     };
   }
-  return {
-    name: 'Unknown',
-  };
+  throw new Error('User not found');
 }
 
 function getFiles(slackMessage) {
@@ -104,15 +100,17 @@ export async function slackToInternalMessage(slackMessage) {
 }
 
 async function slackToInternalMessages(slackMessages) {
-  const internalMessages = slackMessages.filter((message) => message.ts)
-    .filter((message) => message.subtype !== 'channel_join')
-    .map(async (message) => {
-      return slackToInternalMessage(message);
-    });
-  if (internalMessages) {
-    return Promise.all(internalMessages);
-  }
-  return [];
+  return Promise.all(slackMessages.filter((message) => message.ts)
+    .filter((message) => !message.subtype || SUPPORTED_MESSAGE_SUBTYPES.includes(message.subtype))
+    .reduce(async (messages, message) => {
+      try {
+        const internalMessage = await slackToInternalMessage(message);
+        return [...messages, internalMessage];
+      } catch (e) {
+        console.error(`failed to convert slack message ${message.ts} to internal message`, e);
+        return messages;
+      }
+    }, []));
 }
 
 export async function postToChannel(channelId, message) {
@@ -171,6 +169,7 @@ export async function getMembers(channelId) {
   return memberIds.map(async (memberId) => {
     const user = await slackClient.client.users.info({ user: memberId });
     return {
+      id: memberId,
       name: user.real_name,
     };
   });
