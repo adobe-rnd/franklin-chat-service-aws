@@ -170,6 +170,8 @@ export async function getMembers(channelId) {
 
   return memberIds.map(async (memberId) => {
     const user = await slackClient.client.users.info({ user: memberId });
-    return user.real_name;
+    return {
+      name: user.real_name,
+    };
   });
 }
