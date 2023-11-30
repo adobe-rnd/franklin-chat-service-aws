@@ -36,17 +36,14 @@ async function getUser(message) {
       name: message.username,
     };
   }
-  const res = await slackClient.client.users.info({
+  const { user } = await slackClient.client.users.info({
     user: message.user,
   });
-  if (res) {
-    return {
-      id: res.user.id,
-      name: res.user.real_name,
-      icon: res.user.profile.image_48,
-    };
-  }
-  throw new Error('User not found');
+  return {
+    id: message.user,
+    name: user.real_name,
+    icon: user.profile.image_48,
+  };
 }
 
 function getFiles(slackMessage) {
@@ -168,7 +165,7 @@ export async function getMembers(channelId) {
   const memberIds = members.members ?? [];
 
   return Promise.all(memberIds.map(async (memberId) => {
-    const user = await slackClient.client.users.info({ user: memberId });
+    const { user } = await slackClient.client.users.info({ user: memberId });
     return {
       id: memberId,
       name: user.real_name,
