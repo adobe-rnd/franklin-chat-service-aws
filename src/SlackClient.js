@@ -103,15 +103,15 @@ async function slackToInternalMessages(slackMessages) {
   return Promise.all(Array.from(slackMessages
     .filter((message) => message.ts)
     .filter((message) => !message.subtype || SUPPORTED_MESSAGE_SUBTYPES.includes(message.subtype))
-    .reduce(async (messages, message) => {
+    .map(async (message) => {
       try {
-        const internalMessage = await slackToInternalMessage(message);
-        return [...messages, internalMessage];
+        return await slackToInternalMessage(message);
       } catch (e) {
         console.error(`failed to convert slack message ${message.ts} to internal message`, e);
-        return messages;
+        return null;
       }
-    }, [])));
+    })
+    .filter((message) => message !== null)));
 }
 
 export async function postToChannel(channelId, message) {
