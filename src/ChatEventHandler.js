@@ -155,7 +155,7 @@ async function handleRepliesMessage({ ts }, { channelId }) {
 }
 
 async function handleMembersMessage({ channelId }) {
-  console.debug(`getting replies for channel ${channelId} and thread ${ts}`);
+  console.debug(`getting members for channel ${channelId}`);
   return getMembers(channelId);
 }
 
